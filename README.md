@@ -17,35 +17,37 @@ urlFragment: azure-search-openai-demo
 ---
 -->
 
-# RAG chat app with Azure OpenAI and Azure AI Search (Python)
+# RAG Chat App with Azure OpenAI and Azure AI Search (Python)
 
-This solution creates a ChatGPT-like frontend experience over your own documents using RAG (Retrieval Augmented Generation). It uses Azure OpenAI Service to access GPT models, and Azure AI Search for data indexing and retrieval.
+This solution creates a ChatGPT-like frontend experience over your own documents using Retrieval Augmented Generation (RAG). It leverages Azure OpenAI Service for GPT models and Azure AI Search for data indexing and retrieval.
 
-This solution's backend is written in Python. There are also [**JavaScript**](https://aka.ms/azai/js/code), [**.NET**](https://aka.ms/azai/net/code), and [**Java**](https://aka.ms/azai/java/code) samples based on this one. Learn more about [developing AI apps using Azure AI Services](https://aka.ms/azai).
+The backend is written in Python. Alternative samples are available in [**JavaScript**](https://aka.ms/azai/js/code), [**.NET**](https://aka.ms/azai/net/code), and [**Java**](https://aka.ms/azai/java/code). Learn more about [developing AI apps using Azure AI Services](https://aka.ms/azai).
 
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=599293758&machine=standardLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json&location=WestUs2)
 [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/azure-search-openai-demo)
 
 ## Important Security Notice
 
-This template, the application code and configuration it contains, has been built to showcase Microsoft Azure specific services and tools. We strongly advise our customers not to make this code part of their production environments without implementing or enabling additional security features. See our [productionizing guide](docs/productionizing.md) for tips, and consult the [Azure OpenAI Landing Zone reference architecture](https://techcommunity.microsoft.com/blog/azurearchitectureblog/azure-openai-landing-zone-reference-architecture/3882102) for more best practices.
+This template, along with its application code and configuration, is designed to showcase Microsoft Azure services and tools. **Do not use this code in production environments** without implementing additional security measures. Refer to our [productionizing guide](docs/productionizing.md) and the [Azure OpenAI Landing Zone reference architecture](https://techcommunity.microsoft.com/blog/azurearchitectureblog/azure-openai-landing-zone-reference-architecture/3882102) for best practices.
 
 ## Table of Contents
 
 - [Features](#features)
-- [Azure account requirements](#azure-account-requirements)
-  - [Cost estimation](#cost-estimation)
+- [Azure Account Requirements](#azure-account-requirements)
+  - [Cost Estimation](#cost-estimation)
 - [Getting Started](#getting-started)
   - [GitHub Codespaces](#github-codespaces)
   - [VS Code Dev Containers](#vs-code-dev-containers)
-  - [Local environment](#local-environment)
+  - [Local Environment](#local-environment)
 - [Deploying](#deploying)
-  - [Deploying again](#deploying-again)
-- [Running the development server](#running-the-development-server)
-- [Using the app](#using-the-app)
-- [Clean up](#clean-up)
+  - [Deploying Again](#deploying-again)
+- [Running the Development Server](#running-the-development-server)
+- [Using the App](#using-the-app)
+- [Clean Up](#clean-up)
 - [Guidance](#guidance)
   - [Resources](#resources)
+  - [Getting Help](#getting-help)
+- [Note](#note)
 
 ![Chat screen](docs/images/chatscreen.png)
 
@@ -70,7 +72,7 @@ The repo includes sample data so it's ready to try end to end. In this sample ap
 
 ![RAG Architecture](docs/images/appcomponents.png)
 
-## Azure account requirements
+## Azure Account Requirements
 
 **IMPORTANT:** In order to deploy and run this example, you'll need:
 
@@ -79,28 +81,25 @@ The repo includes sample data so it's ready to try end to end. In this sample ap
   - Your Azure account must have `Microsoft.Authorization/roleAssignments/write` permissions, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner). If you don't have subscription-level permissions, you must be granted [RBAC](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview) for an existing resource group and [deploy to that existing group](docs/deploy_existing.md#resource-group).
   - Your Azure account also needs `Microsoft.Resources/deployments/write` permissions on the subscription level.
 
-### Cost estimation
+### Cost Estimation
 
-Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
-However, you can try the [Azure pricing calculator](https://azure.com/e/e3490de2372a4f9b909b0d032560e41b) for the resources below.
+Pricing varies by region and usage, making it difficult to predict exact costs. Use the [Azure pricing calculator](https://azure.com/e/e3490de2372a4f9b909b0d032560e41b) to estimate costs for the following resources:
 
-- Azure Container Apps: Default host for app deployment as of 10/28/2024. See more details in [the ACA deployment guide](docs/azure_container_apps.md). Consumption plan with 1 CPU core, 2 GB RAM, minimum of 0 replicas. Pricing with Pay-as-You-Go. [Pricing](https://azure.microsoft.com/pricing/details/container-apps/)
-- Azure Container Registry: Basic tier. [Pricing](https://azure.microsoft.com/pricing/details/container-registry/)
-- Azure App Service: Only provisioned if you deploy to Azure App Service following [the App Service deployment guide](docs/azure_app_service.md).  Basic Tier with 1 CPU core, 1.75 GB RAM. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
-- Azure OpenAI: Standard tier, GPT and Ada models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
-- Azure AI Document Intelligence: SO (Standard) tier using pre-built layout. Pricing per document page, sample documents have 261 pages total. [Pricing](https://azure.microsoft.com/pricing/details/form-recognizer/)
-- Azure AI Search: Basic tier, 1 replica, free level of semantic search. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/search/)
-- Azure Blob Storage: Standard tier with ZRS (Zone-redundant storage). Pricing per storage and read operations. [Pricing](https://azure.microsoft.com/pricing/details/storage/blobs/)
-- Azure Cosmos DB: Only provisioned if you enabled [chat history with Cosmos DB](docs/deploy_features.md#enabling-persistent-chat-history-with-azure-cosmos-db). Serverless tier. Pricing per request unit and storage. [Pricing](https://azure.microsoft.com/pricing/details/cosmos-db/)
-- Azure AI Vision: Only provisioned if you enabled [GPT-4 with vision](docs/gpt4v.md). Pricing per 1K transactions. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/computer-vision/)
-- Azure AI Content Understanding: Only provisioned if you enabled [media description](docs/deploy_features.md#enabling-media-description-with-azure-content-understanding). Pricing per 1K images. [Pricing](https://azure.microsoft.com/pricing/details/content-understanding/)
-- Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
+- **Azure Container Apps**: Default host for app deployment. Consumption plan with 1 CPU core, 2 GB RAM, and a minimum of 0 replicas. [Pricing](https://azure.microsoft.com/pricing/details/container-apps/)
+- **Azure Container Registry**: Basic tier. [Pricing](https://azure.microsoft.com/pricing/details/container-registry/)
+- **Azure App Service**: Provisioned only if deployed via [App Service deployment guide](docs/azure_app_service.md). Basic tier with 1 CPU core and 1.75 GB RAM. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
+- **Azure OpenAI**: Standard tier for GPT and Ada models. Pricing per 1K tokens. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
+- **Azure AI Document Intelligence**: Standard tier using pre-built layout. Pricing per document page. [Pricing](https://azure.microsoft.com/pricing/details/form-recognizer/)
+- **Azure AI Search**: Basic tier with 1 replica and free semantic search. [Pricing](https://azure.microsoft.com/pricing/details/search/)
+- **Azure Blob Storage**: Standard tier with ZRS (Zone-redundant storage). [Pricing](https://azure.microsoft.com/pricing/details/storage/blobs/)
+- **Azure Cosmos DB**: Provisioned only if [chat history with Cosmos DB](docs/deploy_features.md#enabling-persistent-chat-history-with-azure-cosmos-db) is enabled. Serverless tier. [Pricing](https://azure.microsoft.com/pricing/details/cosmos-db/)
+- **Azure AI Vision**: Provisioned only if [GPT-4 with vision](docs/gpt4v.md) is enabled. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/computer-vision/)
+- **Azure AI Content Understanding**: Provisioned only if [media description](docs/deploy_features.md#enabling-media-description-with-azure-content-understanding) is enabled. [Pricing](https://azure.microsoft.com/pricing/details/content-understanding/)
+- **Azure Monitor**: Pay-as-you-go tier. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
 
-To reduce costs, you can switch to free SKUs for various services, but those SKUs have limitations.
-See this guide on [deploying with minimal costs](docs/deploy_lowcost.md) for more details.
+To minimize costs, consider using free SKUs where available. Refer to the [low-cost deployment guide](docs/deploy_lowcost.md) for details.
 
-⚠️ To avoid unnecessary costs, remember to take down your app if it's no longer in use,
-either by deleting the resource group in the Portal or running `azd down`.
+⚠️ **Important**: To avoid unnecessary costs, delete unused resources by running `azd down` or removing the resource group in the Azure Portal.
 
 ## Getting Started
 
@@ -126,7 +125,7 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 3. In the VS Code window that opens, once the project files show up (this may take several minutes), open a terminal window.
 
-### Local environment
+### Local Environment
 
 1. Install the required tools:
 
@@ -183,7 +182,7 @@ It will look like the following:
 
 > NOTE: It may take 5-10 minutes after you see 'SUCCESS' for the application to be fully deployed. If you see a "Python Developer" welcome screen or an error page, then wait a bit and refresh the page.
 
-### Deploying again
+### Deploying Again
 
 If you've only changed the backend/frontend code in the `app` folder, then you don't need to re-provision the Azure resources. You can just run:
 
@@ -197,7 +196,7 @@ If you've changed the infrastructure files (`infra` folder or `azure.yaml`), the
 azd up
 ```
 
-## Running the development server
+## Running the Development Server
 
 You can only run a development server locally **after** having successfully run the `azd up` command. If you haven't yet, follow the [deploying](#deploying) steps above.
 
@@ -221,7 +220,7 @@ You can only run a development server locally **after** having successfully run 
 It's also possible to enable hotloading or the VS Code debugger.
 See more tips in [the local development guide](docs/localdev.md).
 
-## Using the app
+## Using the App
 
 - In Azure: navigate to the Azure WebApp deployed by azd. The URL is printed out when azd completes (as "Endpoint"), or you can find it in the Azure portal.
 - Running locally: navigate to 127.0.0.1:50505
@@ -232,7 +231,7 @@ Once in the web app:
 - Explore citations and sources
 - Click on "settings" to try different options, tweak prompts, etc.
 
-## Clean up
+## Clean Up
 
 To clean up all the resources created by this sample:
 
@@ -278,7 +277,7 @@ You can find extensive documentation in the [docs](docs/README.md) folder:
 - [📺 Talk: Quickly build and deploy OpenAI apps on Azure, infused with your own data](https://www.youtube.com/watch?v=j8i-OM5kwiY)
 - [📺 Talks: AI Chat App Hack series](https://www.youtube.com/playlist?list=PL5lwDBUC0ag6_dGZst5m3G72ewfwXLcXV)
 
-### Getting help
+### Getting Help
 
 This is a sample built to demonstrate the capabilities of modern Generative AI apps and how they can be built in Azure.
 For help with deploying this sample, please post in [GitHub Issues](/issues). If you're a Microsoft employee, you can also post in [our Teams channel](https://aka.ms/azai-python-help).
